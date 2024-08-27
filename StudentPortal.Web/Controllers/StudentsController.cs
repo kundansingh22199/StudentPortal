@@ -79,5 +79,75 @@ namespace StudentPortal.Web.Controllers
             await dbContext.SaveChangesAsync();
             return RedirectToAction("List", "Students");
         }
+
+
+
+        [HttpGet]
+        public IActionResult AddEmployee()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddEmployee(AddEmployeeViewModel viewModel)
+        {
+            var employee = new Employee
+            {
+                Name = viewModel.Name,
+                Email = viewModel.Email,
+                Phone = viewModel.Phone,
+                Subscribed = viewModel.Subscribed
+            };
+            await dbContext.Employes.AddAsync(employee);
+            await dbContext.SaveChangesAsync();
+            return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> EmployeeList()
+        {
+            var employes = await dbContext.Employes.ToListAsync();
+            return View(employes);
+        }
+        [HttpGet]
+        public async Task<IActionResult> EmployeeEdit(int id)
+        {
+            var employes = await dbContext.Employes.FindAsync(id);
+            return View(employes);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EmployeeEdit(Employee viewModel)
+        {
+            var student = await dbContext.Employes.FindAsync(viewModel.Id);
+            if (student is not null)
+            {
+                student.Name = viewModel.Name;
+                student.Email = viewModel.Email;
+                student.Phone = viewModel.Phone;
+                student.Subscribed = viewModel.Subscribed;
+
+                await dbContext.SaveChangesAsync();
+            }
+            return RedirectToAction("EmployeeList", "Students");
+        }
+        [HttpPost]
+        public async Task<IActionResult> EmployeeDelete(Employee viewModel)
+        {
+            var employee = await dbContext.Employes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == viewModel.Id);
+            if (employee is not null)
+            {
+                dbContext.Employes.Remove(viewModel);
+                await dbContext.SaveChangesAsync();
+            }
+            return RedirectToAction("EmployeeList", "Students");
+        }
+        [HttpGet]
+        public async Task<IActionResult> EmployeeDelete(int id)
+        {
+            var employee = await dbContext.Employes.FindAsync(id);
+            dbContext.Employes.Remove(employee);
+            await dbContext.SaveChangesAsync();
+            return RedirectToAction("EmployeeList", "Students");
+        }
     }
 }
