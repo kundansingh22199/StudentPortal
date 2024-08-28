@@ -31,4 +31,12 @@ namespace StudentPortal.Web.Models.Entities
 
         public bool Subscribed { get; set; }
     }
+    public class Appmst
+    {
+        public int Id { get; set; }
+        public string RegNo { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string MobileNo { get; set; }
+    }
 }

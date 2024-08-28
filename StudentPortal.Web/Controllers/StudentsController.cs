@@ -149,5 +149,20 @@ namespace StudentPortal.Web.Controllers
             await dbContext.SaveChangesAsync();
             return RedirectToAction("EmployeeList", "Students");
         }
+        [HttpGet]
+        public async Task<IActionResult> ListAppMst()
+        {
+            var fromTable = await dbContext.appmst.ToListAsync();
+            var fromProcedure = await dbContext.appmst
+                .FromSqlRaw("EXEC GetAppMstDetails")
+                .ToListAsync();
+            var viewModel = new AppMstViewModel
+            {
+                FromTable = fromTable,
+                FromProcedure = fromProcedure
+            };
+
+            return View(viewModel);
+        }
     }
 }
